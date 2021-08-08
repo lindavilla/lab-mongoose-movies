@@ -1,5 +1,6 @@
 const express = require('express');
 const Movie = require('../models/movie.model');
+const Celebrity = require('../models/celebrity.model')
 
 const router = express.Router();
 
@@ -16,45 +17,45 @@ router.get('/movies/new',(req,res,next) => {
 });
 
 router.post('/movies/new', (req, res, next) => {
-    const {name, occupation, catchPhrase } = req.body;
-    Celebrity.create({name, occupation, catchPhrase})
+    const {title, genre, plot } = req.body;
+    Movie.create({title, genre, plot})
     .then(() => res.redirect('/movies'))
   });
 
-  router.get('/celebrities/:id', (req, res, next) => {
-    const celebrityId = req.params.id
-Celebrity.findById(celebrityId)
-.then((celebrityDetail) => res.render('celebrity/show',{celebrity: celebrityDetail}))
-.catch((error) => console.log('error showing the celebrity', error));
+
+  router.get('/movies/:id', (req, res, next) => {
+    const movieId = req.params.id
+Movie.findById(movieId)
+.then((movieDetail) => res.render('movies/show',{movie: movieDetail}))
+.catch((error) => console.log('error showing the movie', error));
 });
 
 
-router.get('/celebrities/:id/edit', (req, res, next) => {
-    const celebrityId = req.params.id;
-    Celebrity.findById(celebrityId)
-    .then(celebrityToEdit => {
-      console.log(celebrityToEdit);
-      return res.render('celebrity/edit', { celebrity: celebrityToEdit });
+router.get('/movies/:id/edit', (req, res, next) => {
+    const movieId = req.params.id;
+    Movie.findById(movieId)
+    .then(movieToEdit => {
+      console.log(movieToEdit);
+      return res.render('movies/edit', { movie: movieToEdit });
     })
     .catch(error => next(error));
   });
   
-  router.post('/celebrities/:id/edit', (req, res, next) => {
-    const celebrityId = req.params.id;
-    const { name, occupation, catchPhrase } = req.body;
+  router.post('/movies/:id/edit', (req, res, next) => {
+    const movieId = req.params.id;
+    const { title, genre, plot } = req.body;
     
-    Celebrity.findByIdAndUpdate(celebrityId, { name, occupation, catchPhrase }, { new: true })
-      .then(() => res.redirect('/celebrities'))
+    Movie.findByIdAndUpdate(movieId, { title, plot, genre }, { new: true })
+      .then(() => res.redirect('/movies'))
       .catch(error => next(error));
   });
 
   
 
-
-router.post('/celebrities/:id/delete', (req, res, next) => {
-    const celebrityId= req.params.id;
-    Celebrity.findByIdAndDelete(celebrityId)
-    .then(()=> res.redirect('/celebrities'))
+router.post('/movies/:id/delete', (req, res, next) => {
+    const movieId= req.params.id;
+    Movie.findByIdAndDelete(movieId)
+    .then(()=> res.redirect('/movies'))
     });
 
 
